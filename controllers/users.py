@@ -12,7 +12,7 @@ users_routes = Blueprint('users_routes', __name__)
 Session = sessionmaker(connection)
 s = Session()
 
-@users_routes.route('/users', methods=['POST'])
+@users_routes.route('/users/register', methods=['POST'])
 def register_user():
 
     try:
@@ -31,3 +31,4 @@ def register_user():
         return {'message': 'Fail to register'}, 500
     
     return {'message': 'Register user success'}, 200
+
