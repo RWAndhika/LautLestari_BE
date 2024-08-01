@@ -11,6 +11,7 @@ class Products(Base):
     user_id = mapped_column(Integer, ForeignKey('user.id'))
     price = mapped_column(Integer, nullable=False)
     description = mapped_column(String(255))
+    category = mapped_column(String(255), nullable=False)
     location = mapped_column(String(255), nullable=False)
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now())
