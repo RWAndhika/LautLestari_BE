@@ -28,6 +28,7 @@ CREATE TABLE products(
     user_id INTEGER,
     price INTEGER,
     description VARCHAR(255),
+    location VARCHAR(255),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME,
     FOREIGN KEY (user_id) REFERENCES users(id)
