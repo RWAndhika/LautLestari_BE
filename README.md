@@ -26,9 +26,10 @@ CREATE TABLE users(
 CREATE TABLE products(
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     user_id INTEGER,
-    price INTEGER,
+    price INTEGER NOT NULL,
     description VARCHAR(255),
-    location VARCHAR(255),
+    category VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME,
     FOREIGN KEY (user_id) REFERENCES users(id)
