@@ -19,10 +19,10 @@ class Users(Base, UserMixin):
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    products = relationship('Products', backref='user', cascade="all, delete-orphan")
+    # products = relationship('Products', backref='user', cascade="all, delete-orphan")
 
-    def set_password(self, password_hash):
-        self.password_hash = bcrypt.hashpw(password_hash.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    def set_password(self, password):
+        self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
-    def check_password(self, password_hash):
-        return bcrypt.checkpw(password_hash.encode('utf-8'), self.password_hash.encode('utf-8'))
+    def check_password(self, password):
+        return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))

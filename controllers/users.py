@@ -28,6 +28,7 @@ def register_user():
         s.commit()
     except Exception as e:
         s.rollback()
+        print(e)
         return {'message': 'Fail to register'}, 500
     
     return {'message': 'Register user success'}, 200
