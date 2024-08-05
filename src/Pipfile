@@ -11,6 +11,7 @@ bcrypt = "*"
 sqlalchemy = "*"
 mysql-connector-python = "*"
 gunicorn = "*"
+flask-cors = "*"
 
 [dev-packages]
 

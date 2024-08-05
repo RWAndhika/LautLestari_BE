@@ -2,7 +2,7 @@ from flask import Flask
 from dotenv import load_dotenv
 from controllers.users import users_routes, s
 from controllers.products import products_routes
-
+from flask_cors import CORS  # Import Flask-CORS
 from flask_login import LoginManager
 from models.users import Users
 
@@ -11,6 +11,8 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
+
+CORS(app)  # Enable CORS for the whole app
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 app.register_blueprint(users_routes)
