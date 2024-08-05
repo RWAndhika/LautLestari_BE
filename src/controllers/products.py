@@ -12,7 +12,11 @@ def get_products():
     try:
         products_query = s.query(Products).all()
         result = s.execute(products_query)
+        print(result)
         products = []
+
+        if products is None:
+            return {"products": "[]"}, 200
 
         for row in result.scalars():
             products.append(
@@ -32,6 +36,7 @@ def get_products():
         return {'products': products}, 200
     
     except Exception as e:
+        print(e)
         return {'message': 'Unexpected error'}, 500
     
 @products_routes.route('/products/<id>', methods=['GET'])
