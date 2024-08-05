@@ -10,4 +10,4 @@ print("Connecting to MySQL Database")
 engine = create_engine(f'mysql+mysqlconnector://{username}:{password}@{host}/{database}')
 
 connection = engine.connect()
-print("Success connecting to MySQL Database")
+print(f"Success connecting to MySQL Database")
