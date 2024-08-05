@@ -20,6 +20,7 @@ def get_products():
                     'id': row.id,
                     'user_id': row.user_id,
                     'price': row.price,
+                    'qty': row.qty,
                     'description': row.description,
                     'category': row.category,
                     'location': row.location,
@@ -33,5 +34,25 @@ def get_products():
     except Exception as e:
         return {'message': 'Unexpected error'}, 500
     
+@products_routes.route('/products/<id>', methods=['GET'])
+@login_required
+def get_product(id):
+    try:
+        product= s.query(Products).filter(Products.id == id).first()
+        if product == None:
+            return {'message': 'product not found'}, 404
 
-        
+        return {
+                'id': product.id,
+                'user_id': product.user_id,
+                'price': product.price,
+                'qty': product.qty,
+                'description': product.description,
+                'category': product.category,
+                'location': product.location,
+                'created_at': product.created_at,
+                'updated_at': product.updated_at,}, 200
+    
+    except Exception as e:
+        return {'message': 'Unexpected error'}, 500
+    
