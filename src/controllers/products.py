@@ -13,9 +13,6 @@ def get_products():
         products_query = s.query(Products).all()
         products = []
 
-        if products is None:
-            return {"products": "[]"}, 200
-
         for row in products_query:
             products.append(
                 {
