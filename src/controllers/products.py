@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request
 from models.products import Products
 from controllers.users import s
 
@@ -55,4 +55,62 @@ def get_product(id):
     
     except Exception as e:
         return {'message': 'Unexpected error'}, 500
+    
+@products_routes.route('/products', methods=['POST'])
+@login_required
+def create_product():
+    try:
+        product = Products(
+            user_id=current_user.id,
+            # image=request.form['image'],
+            price=request.form['price'],
+            qty=request.form['qty'],
+            description=request.form['description'],
+            category=request.form['category'],
+            location=request.form['location'],
+        )
+        s.add(product)
+        s.commit()
+    
+    except Exception as e:
+        s.rollback()
+        print(e)
+        return {'message': 'Unexpected error'}, 500
+
+    return {'message': 'Create product success'}, 200
+
+@products_routes.route('/products/<id>', methods=['DELETE'])
+@login_required
+def delete_product(id):
+    try:
+        product = s.query(Products).filter(Products.id == id).first()
+        s.delete(product)
+        s.commit()
+
+    except Exception as e:
+        s.rollback()
+        print(e)
+        return {'message': 'Unexpected error'}, 500
+
+    return {'message': 'Delete product success'}, 200
+
+@products_routes.route('/products/<id>', methods=['PUT'])
+@login_required
+def update_product(id):
+    try:
+        product = s.query(Products).filter(Products.id == id).first()
+        # product.image = request.form['image']
+        product.price = request.form['price']
+        product.qty = request.form['qty']
+        product.description = request.form['description']
+        product.category = request.form['category']
+        product.location = request.form['location']
+        s.commit()
+
+    except Exception as e:  
+        s.rollback()
+        print(e)
+        return {'message': 'Unexpected error'}, 500
+
+    return {'message': 'Update product success'}, 200
     
