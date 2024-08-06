@@ -11,14 +11,12 @@ products_routes = Blueprint('products_routes', __name__)
 def get_products():
     try:
         products_query = s.query(Products).all()
-        result = s.execute(products_query)
-        print(result)
         products = []
 
         if products is None:
             return {"products": "[]"}, 200
 
-        for row in result.scalars():
+        for row in products_query:
             products.append(
                 {
                     'id': row.id,
