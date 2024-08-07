@@ -8,6 +8,9 @@ from decorators.authorization_checker import role_required
 from cerberus import Validator
 from validations.products_vallidation import add_products_schema
 
+import cloudinary.uploader
+
+
 products_routes = Blueprint('products_routes', __name__)
 
 @products_routes.route('/products', methods=['GET'])
@@ -81,10 +84,22 @@ def create_product():
     if not v.validate(request_body):
         return {'message': 'Validation failed', 'errors': v.errors}, 400
     
+    # Upload image to cloudinary
+    image_file = request.files.get('image')
+    if image_file:
+        try:
+            upload_result = cloudinary.uploader.upload(image_file)
+            image_url = upload_result['secure_url']
+        except Exception as e:
+            print(e)
+            return {'message': 'Failed to upload image', 'error': str(e)}, 500
+    else:
+        return {'message': 'No image file provided'}, 400
+    
     try:
         product = Products(
             user_id=current_user.id,
-            image=request.form['image'],
+            image=image_url,
             price=request.form['price'],
             qty=request.form['qty'],
             description=request.form['description'],
