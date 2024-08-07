@@ -6,7 +6,10 @@ from flask_cors import CORS  # Import Flask-CORS
 from flask_login import LoginManager
 from models.users import Users
 
+import cloudinary
 import os
+
+
 
 load_dotenv()
 
@@ -14,6 +17,12 @@ app = Flask(__name__)
 
 CORS(app)  # Enable CORS for the whole app
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
+)
 
 app.register_blueprint(users_routes)
 app.register_blueprint(products_routes)
