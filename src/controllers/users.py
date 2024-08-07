@@ -7,6 +7,9 @@ from sqlalchemy import func
 
 from flask_login import login_user, login_required, logout_user, current_user
 
+from cerberus import Validator
+from validations.users_validation import users_register_schema
+
 users_routes = Blueprint('users_routes', __name__)
 
 Session = sessionmaker(connection)
@@ -14,6 +17,15 @@ s = Session()
 
 @users_routes.route('/users/register', methods=['POST'])
 def register_user():
+
+    v = Validator(users_register_schema)
+    request_body = {
+        'username': request.form.get('username'),
+        'email': request.form.get('email')
+    }
+
+    if not v.validate(request_body):
+        return {'message': 'Validation failed', 'error': v.errors}, 409
 
     try:
         NewUser = Users(

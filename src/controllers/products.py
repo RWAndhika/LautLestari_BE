@@ -4,6 +4,10 @@ from controllers.users import s
 
 from flask_login import current_user, login_required
 
+from cerberus import Validator
+from validations.products_vallidation import add_products_schema
+
+
 products_routes = Blueprint('products_routes', __name__)
 
 @products_routes.route('/products', methods=['GET'])
@@ -59,6 +63,21 @@ def get_product(id):
 @products_routes.route('/products', methods=['POST'])
 @login_required
 def create_product():
+
+
+    v = Validator(add_products_schema)
+
+    request_body = {
+        'price': request.form.get('price', type=int),
+        'qty': request.form.get('qty', type=int),
+        'description': request.form.get('description'),
+        'category': request.form.get('category'),
+        'location': request.form.get('location')
+    }
+
+    if not v.validate(request_body):
+        return {'message': 'Validation failed', 'errors': v.errors}, 400
+    
     try:
         product = Products(
             user_id=current_user.id,
