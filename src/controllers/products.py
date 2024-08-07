@@ -8,10 +8,10 @@ from decorators.authorization_checker import role_required
 from cerberus import Validator
 from validations.products_vallidation import add_products_schema
 
-
 products_routes = Blueprint('products_routes', __name__)
 
 @products_routes.route('/products', methods=['GET'])
+
 @role_required('buyer')
 def get_products():
     try:
