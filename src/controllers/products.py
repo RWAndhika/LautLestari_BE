@@ -2,12 +2,13 @@ from flask import Blueprint, request
 from models.products import Products
 from controllers.users import s
 
-from flask_login import current_user, login_required
+from flask_login import current_user
+from decorators.authorization_checker import role_required
 
 products_routes = Blueprint('products_routes', __name__)
 
 @products_routes.route('/products', methods=['GET'])
-@login_required
+@role_required("customer")
 def get_products():
     try:
         products_query = s.query(Products).all()
@@ -40,7 +41,7 @@ def get_products():
         return {'message': 'Unexpected error'}, 500
     
 @products_routes.route('/products/<id>', methods=['GET'])
-@login_required
+@role_required("customer")
 def get_product(id):
     try:
         product= s.query(Products).filter(Products.id == id).first()
@@ -62,7 +63,7 @@ def get_product(id):
         return {'message': 'Unexpected error'}, 500
     
 @products_routes.route('/products', methods=['POST'])
-@login_required
+@role_required("seller")
 def create_product():
     try:
         product = Products(
@@ -85,7 +86,7 @@ def create_product():
     return {'message': 'Create product success'}, 200
 
 @products_routes.route('/products/<id>', methods=['DELETE'])
-@login_required
+@role_required("seller")
 def delete_product(id):
     try:
         product = s.query(Products).filter(Products.id == id).first()
@@ -100,7 +101,7 @@ def delete_product(id):
     return {'message': 'Delete product success'}, 200
 
 @products_routes.route('/products/<id>', methods=['PUT'])
-@login_required
+@role_required("seller")
 def update_product(id):
     try:
         product = s.query(Products).filter(Products.id == id).first()
