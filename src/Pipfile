@@ -12,6 +12,7 @@ sqlalchemy = "*"
 mysql-connector-python = "*"
 gunicorn = "*"
 flask-cors = "*"
+cerberus = "*"
 
 [dev-packages]
 
