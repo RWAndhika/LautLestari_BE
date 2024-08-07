@@ -47,27 +47,6 @@ def register_user():
 
 @users_routes.route('/users/login', methods=['POST'])
 def user_login():
-    # input = request.get_json()
-    # print(input)
-    # try:
-    #     user = s.query(Users).filter(Users.email == input.get("email")).first()
-    #     if user == None:
-    #         return {'message': 'User not found'}, 403
-        
-    #     if not user.check_password(input.get("password")):
-    #         return {'message': 'Invalid password'}, 403
-        
-    #     login_user(user)
-    #     session_id = request.cookies.get('session')
-    #     return {
-    #         'session_id': session_id,
-    #         'message': 'Login success'
-    #     }, 200
-    
-    # except Exception as e:
-    #     print(e)
-    #     s.rollback()
-    #     return {'message': 'Fail to login'}, 500
 
     try:
         email = request.form['email']
