@@ -27,6 +27,7 @@ CREATE TABLE products(
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     user_id INTEGER,
     price INTEGER NOT NULL,
+    image VARCHAR(255),
     qty INTEGER NOT NULL,
     description VARCHAR(255),
     category VARCHAR(255) NOT NULL,
