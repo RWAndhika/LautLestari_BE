@@ -9,7 +9,7 @@ class Products(Base):
 
     id = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id = mapped_column(Integer, ForeignKey('users.id'))
-    # image = mapped_column(LargeBinary, nullable=False)
+    image = mapped_column(String(255), nullable=False)
     price = mapped_column(Integer, nullable=False)
     qty = mapped_column(Integer, nullable=False)
     description = mapped_column(Text)

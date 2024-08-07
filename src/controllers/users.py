@@ -8,6 +8,9 @@ from sqlalchemy import func
 from flask_login import login_user, login_required, logout_user, current_user
 # from decorators.authorization_checker import role_required
 
+from cerberus import Validator
+from validations.users_validation import users_register_schema
+
 users_routes = Blueprint('users_routes', __name__)
 
 Session = sessionmaker(connection)
@@ -15,6 +18,15 @@ s = Session()
 
 @users_routes.route('/users/register', methods=['POST'])
 def register_user():
+
+    v = Validator(users_register_schema)
+    request_body = {
+        'username': request.form.get('username'),
+        'email': request.form.get('email')
+    }
+
+    if not v.validate(request_body):
+        return {'message': 'Validation failed', 'error': v.errors}, 409
 
     try:
         NewUser = Users(
@@ -36,27 +48,6 @@ def register_user():
 
 @users_routes.route('/users/login', methods=['POST'])
 def user_login():
-    # input = request.get_json()
-    # print(input)
-    # try:
-    #     user = s.query(Users).filter(Users.email == input.get("email")).first()
-    #     if user == None:
-    #         return {'message': 'User not found'}, 403
-        
-    #     if not user.check_password(input.get("password")):
-    #         return {'message': 'Invalid password'}, 403
-        
-    #     login_user(user)
-    #     session_id = request.cookies.get('session')
-    #     return {
-    #         'session_id': session_id,
-    #         'message': 'Login success'
-    #     }, 200
-    
-    # except Exception as e:
-    #     print(e)
-    #     s.rollback()
-    #     return {'message': 'Fail to login'}, 500
 
     try:
         email = request.form['email']

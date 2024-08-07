@@ -5,10 +5,14 @@ from controllers.users import s
 from flask_login import current_user
 from decorators.authorization_checker import role_required
 
+from cerberus import Validator
+from validations.products_vallidation import add_products_schema
+
 products_routes = Blueprint('products_routes', __name__)
 
 @products_routes.route('/products', methods=['GET'])
-@role_required("customer")
+
+@role_required('buyer')
 def get_products():
     try:
         products_query = s.query(Products).all()
@@ -20,6 +24,7 @@ def get_products():
                     'id': row.id,
                     'user_id': row.user_id,
                     'price': row.price,
+                    'image': row.image,
                     'qty': row.qty,
                     'description': row.description,
                     'category': row.category,
@@ -36,7 +41,7 @@ def get_products():
         return {'message': 'Unexpected error'}, 500
     
 @products_routes.route('/products/<id>', methods=['GET'])
-@role_required("customer")
+@role_required('buyer')
 def get_product(id):
     try:
         product= s.query(Products).filter(Products.id == id).first()
@@ -47,6 +52,7 @@ def get_product(id):
                 'id': product.id,
                 'user_id': product.user_id,
                 'price': product.price,
+                'image': product.image,
                 'qty': product.qty,
                 'description': product.description,
                 'category': product.category,
@@ -58,12 +64,27 @@ def get_product(id):
         return {'message': 'Unexpected error'}, 500
     
 @products_routes.route('/products', methods=['POST'])
-@role_required("seller")
+@role_required('seller')
 def create_product():
+
+
+    v = Validator(add_products_schema)
+
+    request_body = {
+        'price': request.form.get('price', type=int),
+        'qty': request.form.get('qty', type=int),
+        'description': request.form.get('description'),
+        'category': request.form.get('category'),
+        'location': request.form.get('location')
+    }
+
+    if not v.validate(request_body):
+        return {'message': 'Validation failed', 'errors': v.errors}, 400
+    
     try:
         product = Products(
             user_id=current_user.id,
-            # image=request.form['image'],
+            image=request.form['image'],
             price=request.form['price'],
             qty=request.form['qty'],
             description=request.form['description'],
@@ -81,7 +102,7 @@ def create_product():
     return {'message': 'Create product success'}, 200
 
 @products_routes.route('/products/<id>', methods=['DELETE'])
-@role_required("seller")
+@role_required('seller')
 def delete_product(id):
     try:
         product = s.query(Products).filter(Products.id == id).first()
@@ -96,11 +117,11 @@ def delete_product(id):
     return {'message': 'Delete product success'}, 200
 
 @products_routes.route('/products/<id>', methods=['PUT'])
-@role_required("seller")
+@role_required('seller')
 def update_product(id):
     try:
         product = s.query(Products).filter(Products.id == id).first()
-        # product.image = request.form['image']
+        product.image = request.form['image']
         product.price = request.form['price']
         product.qty = request.form['qty']
         product.description = request.form['description']
