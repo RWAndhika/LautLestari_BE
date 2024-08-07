@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func
 
 from flask_login import login_user, login_required, logout_user, current_user
+# from decorators.authorization_checker import role_required
 
 users_routes = Blueprint('users_routes', __name__)
 
