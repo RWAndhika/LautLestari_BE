@@ -9,6 +9,6 @@ RUN pip install -U pipenv
 
 RUN pipenv install --deploy
 
-EXPOSE 8080
+EXPOSE 5000
 
-CMD ["pipenv", "run", "gunicorn", "-b", "0.0.0.0:8080", "index:app"]
+CMD ["pipenv", "run", "gunicorn", "-b", "0.0.0.0:5000", "app:app"]
