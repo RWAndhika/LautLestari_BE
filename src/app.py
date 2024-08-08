@@ -27,6 +27,9 @@ cloudinary.config(
 app.register_blueprint(users_routes)
 app.register_blueprint(products_routes)
 
+if __name__ == "__main__":
+    app.run(debug=True)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
