@@ -43,6 +43,35 @@ def get_products():
         print(e)
         return {'message': 'Unexpected error'}, 500
     
+@products_routes.route('/products/me', methods=['GET'])
+@role_required('buyer')
+def get_user_products():
+    try:
+        products_query = s.query(Products).filter(Products.user_id == current_user.id).all()
+        products = []
+
+        for row in products_query:
+            products.append(
+                {
+                    'id': row.id,
+                    'user_id': row.user_id,
+                    'price': row.price,
+                    'image': row.image,
+                    'qty': row.qty,
+                    'description': row.description,
+                    'category': row.category,
+                    'location': row.location,
+                    'created_at': row.created_at,
+                    'updated_at': row.updated_at,
+                }
+            )
+
+        return {'products': products}, 200
+    
+    except Exception as e:
+        print(e)
+        return {'message': 'Unexpected error'}, 500
+    
 @products_routes.route('/products/<id>', methods=['GET'])
 @role_required('buyer')
 def get_product(id):
