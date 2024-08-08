@@ -4,6 +4,7 @@ from controllers.users import s
 
 from flask_login import current_user
 from decorators.authorization_checker import role_required
+from sqlalchemy import func
 
 from cerberus import Validator
 from validations.products_vallidation import add_products_schema
@@ -110,7 +111,9 @@ def create_product():
         'qty': request.form.get('qty', type=int),
         'description': request.form.get('description'),
         'category': request.form.get('category'),
-        'location': request.form.get('location')
+        'location': request.form.get('location'),
+        'nationality': request.form.get('nationality'),
+        'size': request.form.get('size', type=int)
     }
 
     if not v.validate(request_body):
@@ -197,6 +200,8 @@ def update_product(id):
         product.location = request.form['location']
         product.nationality = request.form['nationality']
         product.size = request.form['size']
+
+        product.updated_at = func.now()
         s.commit()
 
     except Exception as e:  
