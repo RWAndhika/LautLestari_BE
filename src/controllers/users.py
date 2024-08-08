@@ -18,6 +18,10 @@ s = Session()
 
 @users_routes.route('/users/register', methods=['POST'])
 def register_user():
+    allowed_role = ['seller', 'buyer']
+    user_role = request.form.get('role')
+    if user_role not in allowed_role:
+        return {'message': 'Invalid role type (seller, buyer)'}, 400
 
     v = Validator(users_register_schema)
     request_body = {
