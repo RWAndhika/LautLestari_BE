@@ -134,9 +134,21 @@ def delete_product(id):
 @products_routes.route('/products/<id>', methods=['PUT'])
 @role_required('seller')
 def update_product(id):
+    # Upload image to cloudinary
+    image_file = request.files.get('image')
+    if image_file:
+        try:
+            upload_result = cloudinary.uploader.upload(image_file)
+            image_url = upload_result['secure_url']
+        except Exception as e:
+            print(e)
+            return {'message': 'Failed to upload image', 'error': str(e)}, 500
+    else:
+        return {'message': 'No image file provided'}, 400
+
     try:
         product = s.query(Products).filter(Products.id == id).first()
-        product.image = request.form['image']
+        product.image = image_url
         product.price = request.form['price']
         product.qty = request.form['qty']
         product.description = request.form['description']
