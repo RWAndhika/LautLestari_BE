@@ -11,4 +11,4 @@ RUN pipenv install --deploy
 
 EXPOSE 8080
 
-CMD ["pipenv", "run", "gunicorn", "-b", "0.0.0.0:8080", "index:app"]
+CMD ["pipenv", "run", "gunicorn", "-b", "0.0.0.0:8080", "app:app"]
