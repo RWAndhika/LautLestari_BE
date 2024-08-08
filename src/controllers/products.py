@@ -14,7 +14,6 @@ import cloudinary.uploader
 products_routes = Blueprint('products_routes', __name__)
 
 @products_routes.route('/products', methods=['GET'])
-
 @role_required('buyer')
 def get_products():
     try:
@@ -177,6 +176,13 @@ def update_product(id):
 
     try:
         product = s.query(Products).filter(Products.id == id).first()
+
+        if product == None:
+            return {'message': 'product not found'}, 404
+        
+        if not product.user_id == current_user.id:
+            return {'message': 'Unauthorized'}, 403
+
         product.image = image_url
         product.price = request.form['price']
         product.qty = request.form['qty']
