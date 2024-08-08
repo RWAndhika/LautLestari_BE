@@ -4,4 +4,6 @@ add_products_schema = {
     'description': {'type': 'string', 'required': True, 'empty': False},
     'category': {'type': 'string', 'required': True, 'empty': False},
     'location': {'type': 'string', 'required': True, 'empty': False},
+    'nationality': {'type': 'string', 'required': True, 'empty': False},
+    'size': {'type': 'integer', 'required': True, 'min': 1},
 }

@@ -15,5 +15,7 @@ class Products(Base):
     description = mapped_column(Text)
     category = mapped_column(String(255), nullable=False)
     location = mapped_column(String(255), nullable=False)
+    nationality = mapped_column(String(255), nullable=False)
+    size = mapped_column(Integer, nullable=False)
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now())

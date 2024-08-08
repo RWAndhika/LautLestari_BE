@@ -31,6 +31,8 @@ def get_products():
                     'description': row.description,
                     'category': row.category,
                     'location': row.location,
+                    'nationality': row.nationality,
+                    'size': row.size,
                     'created_at': row.created_at,
                     'updated_at': row.updated_at,
                 }
@@ -60,6 +62,8 @@ def get_user_products():
                     'description': row.description,
                     'category': row.category,
                     'location': row.location,
+                    'nationality': row.nationality,
+                    'size': row.size,
                     'created_at': row.created_at,
                     'updated_at': row.updated_at,
                 }
@@ -133,6 +137,8 @@ def create_product():
             description=request.form['description'],
             category=request.form['category'],
             location=request.form['location'],
+            nationality=request.form['nationality'],
+            size=request.form['size']
         )
         s.add(product)
         s.commit()
@@ -189,6 +195,8 @@ def update_product(id):
         product.description = request.form['description']
         product.category = request.form['category']
         product.location = request.form['location']
+        product.nationality = request.form['nationality']
+        product.size = request.form['size']
         s.commit()
 
     except Exception as e:  
