@@ -102,7 +102,11 @@ def get_product(id):
 @products_routes.route('/products', methods=['POST'])
 @role_required('seller')
 def create_product():
-
+    
+    allowed_category = ['Import', 'Local']
+    user_category = request.form.get('category')
+    if user_category not in allowed_category:
+        return {'message': 'Invalid category type (Import, Local)'}, 400
 
     v = Validator(add_products_schema)
 
