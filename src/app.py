@@ -2,6 +2,7 @@ from flask import Flask
 from dotenv import load_dotenv
 from controllers.users import users_routes, s
 from controllers.products import products_routes
+from controllers.carts import carts_routes
 from flask_cors import CORS  # Import Flask-CORS
 from flask_login import LoginManager
 from models.users import Users
@@ -26,6 +27,7 @@ cloudinary.config(
 
 app.register_blueprint(users_routes)
 app.register_blueprint(products_routes)
+app.register_blueprint(carts_routes)
 
 if __name__ == "__main__":
     app.run(debug=True)
