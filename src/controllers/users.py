@@ -1,11 +1,13 @@
 from flask import Blueprint, request
 from connectors.mysql_connector import connection
 from models.users import Users
+from models.blocklist import BLOCKLIST
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func
 
 from flask_login import login_user, login_required, logout_user, current_user
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 # from decorators.authorization_checker import role_required
 
 from cerberus import Validator
@@ -63,10 +65,13 @@ def user_login():
         if not user.check_password(request.form['password']):
             return {'message': 'Invalid password'}, 403
         
-        login_user(user)
-        session_id = request.cookies.get('session')
+        # login_user(user)
+        # session_id = request.cookies.get('session')
+
+        access_token = create_access_token(identity=user.id, additional_claims= {'email': user.email, 'id': user.id})
+
         return {
-            'session_id': session_id,
+            'access_token': access_token,
             'message': 'Login success'
         }, 200
     
@@ -75,29 +80,35 @@ def user_login():
         return {'message': 'Fail to login'}, 500
     
 @users_routes.route('/users/me', methods=['GET'])
-@login_required
+@jwt_required()
 def info_user():
+    current_user_id = get_jwt_identity()
     try:
+        user = s.query(Users).filter(Users.id == current_user_id).first()
+        if not user:
+            return {'message': 'User not found'}, 404
+        
         return {
-            'id': current_user.id,
-            'username': current_user.username,
-            'email': current_user.email,
-            'role': current_user.role,
-            'phonenumber': current_user.phonenumber,
-            'created_at': current_user.created_at,
-            'updated_at': current_user.updated_at
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'role': user.role,
+            'phonenumber': user.phonenumber,
+            'created_at': user.created_at,
+            'updated_at': user.updated_at
         }, 200
     except Exception as e:
         return {'message': 'Unauthorized'}, 401
     
 @users_routes.route('/users/me', methods=['DELETE'])
-@login_required
+@jwt_required()
 def delete_user():
+    current_user_id = get_jwt_identity()
     try:
-        user = s.query(Users).filter(Users.id == current_user.id).first()
+        user = s.query(Users).filter(Users.id == current_user_id).first()
         s.delete(user)
         s.commit()
-        logout_user()
+        user_logout()
     except Exception as e:
         s.rollback()
         return {'message': 'Fail to delete user'}, 500
@@ -105,7 +116,13 @@ def delete_user():
     return {'message': 'Delete user success'}, 200
 
 @users_routes.route('/users/logout', methods=['GET'])
-@login_required
+@jwt_required()
 def user_logout():
-    logout_user()
-    return {'message': 'Logout user success'}, 200
+
+    try:
+        jti = get_jwt()["jti"] 
+        BLOCKLIST.add(jti)
+        return {"message": "User successfully logged out"}, 200
+    except Exception as e:
+        print(e)
+        return {"message": "Failed to logout"}, 500
