@@ -1,18 +1,22 @@
 from functools import wraps
-from flask_login import current_user
+from flask_jwt_extended import verify_jwt_in_request, get_jwt
+from flask import jsonify
 
 def role_required(role):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if current_user.is_authenticated and role == 'seller' and current_user.role == 'seller':
+            verify_jwt_in_request()
+            claims = get_jwt()
+
+            if claims.get('role') == 'seller' and role == 'seller':
                 return func(*args, **kwargs)
-            elif current_user.is_authenticated and role == 'buyer' and current_user.role == 'seller':
+            elif claims.get('role') == 'seller' and role == 'buyer':
                 return func(*args, **kwargs)
-            elif current_user.is_authenticated and role == 'buyer' and current_user.role == 'buyer':
+            elif claims.get('role') == 'buyer' and role == 'buyer':
                 return func(*args, **kwargs)
             else:
-                return {"message": "Unauthorized"}, 403
+                return jsonify({"message": "Unauthorized"}), 403
+
         return wrapper
-      
     return decorator

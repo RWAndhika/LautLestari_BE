@@ -6,9 +6,7 @@ from models.blocklist import BLOCKLIST
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func
 
-from flask_login import login_user, login_required, logout_user, current_user
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
-# from decorators.authorization_checker import role_required
 
 from cerberus import Validator
 from validations.users_validation import users_register_schema
@@ -64,11 +62,8 @@ def user_login():
 
         if not user.check_password(request.form['password']):
             return {'message': 'Invalid password'}, 403
-        
-        # login_user(user)
-        # session_id = request.cookies.get('session')
 
-        access_token = create_access_token(identity=user.id, additional_claims= {'email': user.email, 'id': user.id})
+        access_token = create_access_token(identity=user.id, additional_claims= {'email': user.email, 'id': user.id, 'role': user.role})
 
         return {
             'access_token': access_token,
@@ -108,7 +103,8 @@ def delete_user():
         user = s.query(Users).filter(Users.id == current_user_id).first()
         s.delete(user)
         s.commit()
-        user_logout()
+        jti = get_jwt()["jti"] 
+        BLOCKLIST.add(jti)
     except Exception as e:
         s.rollback()
         return {'message': 'Fail to delete user'}, 500
