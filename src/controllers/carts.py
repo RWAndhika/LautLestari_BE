@@ -2,12 +2,15 @@ from flask import Blueprint, request, jsonify
 from models.carts import Carts
 from controllers.users import s
 
+from decorators.authorization_checker import role_required
+
 
 carts_routes = Blueprint('carts_routes', __name__)
 
 
 # menambahkan item ke cart
 @carts_routes.route('/carts', methods=['POST'])
+@role_required('buyer')
 def add_to_cart():
     try:
         user_id = request.form['user_id']
@@ -37,6 +40,7 @@ def add_to_cart():
 
 # mendapatkan item dari cart
 @carts_routes.route('/carts/<user_id>', methods=['GET'])
+@role_required('buyer')
 def get_cart(user_id):
     try:
         cart_items_query = s.query(Carts).filter(Carts.user_id == user_id).all()
@@ -61,6 +65,7 @@ def get_cart(user_id):
 
 # menghapus item dari cart
 @carts_routes.route('/carts/<user_id>/<product_id>', methods=['DELETE'])
+@role_required('buyer')
 def delete_cart(user_id, product_id):
     try:
         cart_item = s.query(Carts).filter(Carts.user_id == user_id, Carts.product_id == product_id).first()
