@@ -13,18 +13,24 @@ carts_routes = Blueprint('carts_routes', __name__)
 @role_required('buyer')
 def add_to_cart():
     try:
-        user_id = request.form['user_id']
-        product_id = request.form['product_id']
-        qty = request.form['qty']
+        
+        user_id = request.form.get('user_id')
+        product_id = request.form.get('product_id')
+        qty = request.form.get('qty', type=int)
 
         if not user_id or not product_id or not qty:
             return {'message': 'Missing parameter'}, 400
+        
+        try:
+            qty = int(qty)
+        except ValueError:
+            return {'message': 'qty must be an integer'}, 400
 
         # cek apakah sudah ada di keranjang
         cart = s.query(Carts).filter(Carts.user_id == user_id, Carts.product_id == product_id).first()
 
         if cart:
-            cart.qty = cart.qty + int(qty)
+            cart.qty += int(qty)
         else:
             new_cart = Carts(user_id=user_id, product_id=product_id, qty=int(qty))
             s.add(new_cart)
