@@ -55,7 +55,8 @@ def get_products():
 @role_required('buyer')
 def get_user_products():
     try:
-        products_query = s.query(Products).filter(Products.user_id == current_user.id).all()
+        current_user_id = get_jwt_identity()
+        products_query = s.query(Products).filter(Products.user_id == current_user_id).all()
         products = []
 
         for row in products_query:
@@ -184,6 +185,7 @@ def delete_product(id):
 @role_required('seller')
 def update_product(id):
     # Upload image to cloudinary
+    current_user_id = get_jwt_identity()
     image_file = request.files.get('image')
     if image_file:
         try:
@@ -201,7 +203,7 @@ def update_product(id):
         if product == None:
             return {'message': 'product not found'}, 404
         
-        if not product.user_id == current_user.id:
+        if not product.user_id == current_user_id:
             return {'message': 'Unauthorized'}, 403
 
         product.image = image_url
