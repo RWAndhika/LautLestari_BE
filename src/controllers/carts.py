@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models.carts import Carts
 from controllers.users import s
-
+from flask_jwt_extended import get_jwt_identity
 from decorators.authorization_checker import role_required
 
 
@@ -13,8 +13,8 @@ carts_routes = Blueprint('carts_routes', __name__)
 @role_required('buyer')
 def add_to_cart():
     try:
-        
-        user_id = request.form.get('user_id')
+        current_user_id = get_jwt_identity()
+        user_id = current_user_id
         product_id = request.form.get('product_id')
         qty = request.form.get('qty', type=int)
 
