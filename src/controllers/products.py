@@ -11,6 +11,12 @@ from validations.products_vallidation import add_products_schema
 
 import cloudinary.uploader
 
+from flask_jwt_extended import (
+    create_access_token,
+    jwt_required,
+    get_jwt_identity,
+    get_jwt,
+)
 
 products_routes = Blueprint('products_routes', __name__)
 
@@ -93,6 +99,8 @@ def get_product(id):
                 'description': product.description,
                 'category': product.category,
                 'location': product.location,
+                'nationality': product.nationality,
+                'size': product.size,
                 'created_at': product.created_at,
                 'updated_at': product.updated_at,}, 200
     
@@ -102,7 +110,7 @@ def get_product(id):
 @products_routes.route('/products', methods=['POST'])
 @role_required('seller')
 def create_product():
-    
+    current_user_id = get_jwt_identity()
     allowed_category = ['Import', 'Local']
     user_category = request.form.get('category')
     if user_category not in allowed_category:
@@ -137,7 +145,7 @@ def create_product():
     
     try:
         product = Products(
-            user_id=current_user.id,
+            user_id=current_user_id,
             image=image_url,
             price=request.form['price'],
             qty=request.form['qty'],
