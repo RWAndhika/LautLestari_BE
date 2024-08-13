@@ -10,7 +10,7 @@ class Confirmations(Base):
     id = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id = mapped_column(Integer, ForeignKey('users.id'))
     buyer = mapped_column(String(255), nullable=False)
-    products_id = mapped_column(Integer, ForeignKey('products.id'))
+    product_id = mapped_column(Integer, ForeignKey('product.id'))
     price = mapped_column(Integer, nullable=False)
     qty = mapped_column(Integer, nullable=False)
     description = mapped_column(String(255), nullable=False)

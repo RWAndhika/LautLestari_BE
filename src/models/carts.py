@@ -11,5 +11,5 @@ class Carts(Base):
     product_id = mapped_column(Integer, ForeignKey('products.id'))
     qty = mapped_column(Integer, nullable=False)
     price = mapped_column(Integer, nullable=False)
-    description = mapped_column(String(255), nullable=False)
+    description = mapped_column(String(500), nullable=False)
     
