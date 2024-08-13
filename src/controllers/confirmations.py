@@ -60,7 +60,7 @@ def get_user_confirmations():
                     'user_id': confirmation.user_id,
                     'buyer': confirmation.buyer,
                     'description': confirmation.description,
-                    'products_id': confirmation.products_id,
+                    'product_id': confirmation.product_id,
                     'qty': confirmation.qty,
                     'created_at': confirmation.created_at,
                     'is_confirm': confirmation.is_confirm
@@ -85,9 +85,8 @@ def get_confirmation(id):
                 'id': confirmation.id,
                     'user_id': confirmation.user_id,
                     'buyer': confirmation.buyer,
-                    'carts_id': confirmation.carts_id,
                     'description': confirmation.description,
-                    'products_id': confirmation.products_id,
+                    'product_id': confirmation.product_id,
                     'qty': confirmation.qty,
                     'created_at': confirmation.created_at,
                     'is_confirm': confirmation.is_confirm }, 200
@@ -101,7 +100,7 @@ def create_confirmation():
     current_user_id = get_jwt_identity()
         
     try:
-        product_id = request.form['products_id']
+        product_id = request.form['product_id']
         product = s.query(Products).filter(Products.id == product_id).first()
         if not product:
             return {'message': 'product not found'}, 404
@@ -125,7 +124,7 @@ def create_confirmation():
         confirmation = Confirmations(
             user_id=product_user_id,
             buyer=buyer_username,
-            products_id=product_id,
+            product_id=product_id,
             price=product_total_price,
             qty=request.form['qty'],
             description=product_description,
@@ -133,7 +132,7 @@ def create_confirmation():
         )
         s.add(confirmation)
 
-        cart = s.query(Carts).filter(Carts.id == request.form.get('carts_id')).first()
+        cart = s.query(Carts).filter(Carts.id == request.form.get('cart_id')).first()
         if cart == None:
             s.rollback()
             return {'message': 'Cart Not Found'}, 404
@@ -177,7 +176,7 @@ def update_confirmation(id):
         if not confirmation.user_id == current_user_id:
             return {'message': 'Unauthorized'}, 403
         
-        product = s.query(Products).filter(Products.id == confirmation.products_id).first()
+        product = s.query(Products).filter(Products.id == confirmation.product_id).first()
 
         product.qty -= int(confirmation.qty)
 
