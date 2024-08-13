@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models.carts import Carts
+from models.products import Products
 from controllers.users import s
 from flask_jwt_extended import get_jwt_identity
 from decorators.authorization_checker import role_required
@@ -25,14 +26,19 @@ def add_to_cart():
             qty = int(qty)
         except ValueError:
             return {'message': 'qty must be an integer'}, 400
+        
+        product = s.query(Products).filter(Products.id == product_id).first()
+        product_price = int(qty) * int(product.price)
+        product_description = product.description
 
         # cek apakah sudah ada di keranjang
         cart = s.query(Carts).filter(Carts.user_id == user_id, Carts.product_id == product_id).first()
 
         if cart:
             cart.qty += int(qty)
+            cart.price = cart.qty * product_price
         else:
-            new_cart = Carts(user_id=user_id, product_id=product_id, qty=int(qty))
+            new_cart = Carts(user_id=user_id, product_id=product_id, qty=int(qty), price=product_price, description=product_description)
             s.add(new_cart)
 
         s.commit()
@@ -58,7 +64,9 @@ def get_cart(user_id):
                     'id': row.id,
                     'user_id': row.user_id,
                     'product_id': row.product_id,
-                    'qty': row.qty
+                    'qty': row.qty,
+                    'price': row.price,
+                    'description': row.description
                 }
             )
 

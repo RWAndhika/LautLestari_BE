@@ -145,6 +145,23 @@ def create_product():
         return {'message': 'No image file provided'}, 400
     
     try:
+        if (request.form.get('referral_code')):
+            product = Products(
+                user_id=current_user_id,
+                image=image_url,
+                price=request.form['price'],
+                qty=request.form['qty'],
+                description=request.form['description'],
+                category=request.form['category'],
+                location=request.form['location'],
+                nationality=request.form['nationality'],
+                size=request.form['size'],
+                referral_code=request.form['referral_code']
+            )
+            s.add(product)
+            s.commit()
+            return {'message': 'Create product success'}, 200
+            
         product = Products(
             user_id=current_user_id,
             image=image_url,
@@ -214,6 +231,10 @@ def update_product(id):
         product.location = request.form['location']
         product.nationality = request.form['nationality']
         product.size = request.form['size']
+        if (request.form.get('referral_code')):
+            product.referral_code = request.form.get('referral_code')
+        else:
+            product.referral_code = ""
 
         product.updated_at = func.now()
         s.commit()

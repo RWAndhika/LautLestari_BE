@@ -74,7 +74,7 @@ def user_login():
         access_token = create_access_token(
             identity=user.id,
             additional_claims={"email": user.email, "id": user.id, "role": user.role},
-            fresh=timedelta(minutes=15),
+            fresh=timedelta(days=7),
         )
 
         return {"access_token": access_token, "message": "Login success"}, 200
