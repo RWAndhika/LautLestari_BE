@@ -79,11 +79,12 @@ def get_cart():
 
 
 # menghapus item dari cart
-@carts_routes.route('/carts/<user_id>/<product_id>', methods=['DELETE'])
+@carts_routes.route('/carts/<product_id>', methods=['DELETE'])
 @role_required('buyer')
-def delete_cart(user_id, product_id):
+def delete_cart(product_id):
     try:
-        cart_item = s.query(Carts).filter(Carts.user_id == user_id, Carts.product_id == product_id).first()
+        current_user_id = get_jwt_identity()
+        cart_item = s.query(Carts).filter(Carts.user_id == current_user_id, Carts.product_id == product_id).first()
 
         if not cart_item:
             return jsonify({'message': 'Item not found'}), 404
