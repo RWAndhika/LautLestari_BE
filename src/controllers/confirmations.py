@@ -117,6 +117,11 @@ def create_confirmation():
         
         buyer_username = buyer.username
 
+        if (request.form.get('referral_code')):
+            referral_code = request.form.get('referral_code')
+            if product.referral_code == referral_code:
+                product_total_price = (product_total_price * 80)//100
+
         confirmation = Confirmations(
             user_id=product_user_id,
             buyer=buyer_username,

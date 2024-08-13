@@ -17,5 +17,6 @@ class Products(Base):
     location = mapped_column(String(255), nullable=False)
     nationality = mapped_column(String(255), nullable=False)
     size = mapped_column(Integer, nullable=False)
+    referral_code = mapped_column(String(10))
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now())
