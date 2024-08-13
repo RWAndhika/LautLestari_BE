@@ -51,11 +51,12 @@ def add_to_cart():
 
 
 # mendapatkan item dari cart
-@carts_routes.route('/carts/<user_id>', methods=['GET'])
+@carts_routes.route('/carts', methods=['GET'])
 @role_required('buyer')
-def get_cart(user_id):
+def get_cart():
     try:
-        cart_items_query = s.query(Carts).filter(Carts.user_id == user_id).all()
+        current_user_id = get_jwt_identity()
+        cart_items_query = s.query(Carts).filter(Carts.user_id == current_user_id).all()
         cart_items = []
 
         for row in cart_items_query:
