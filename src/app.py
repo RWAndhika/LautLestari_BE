@@ -1,14 +1,13 @@
 from flask import Flask, jsonify
 from dotenv import load_dotenv
-from controllers.users import users_routes, s
+from controllers.users import users_routes
 from controllers.products import products_routes
 from controllers.carts import carts_routes
 from controllers.confirmations import confirmations_routes
-from flask_cors import CORS  # Import Flask-CORS
-from flask_login import LoginManager
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from models.users import Users
 from models.blocklist import BLOCKLIST
+from datetime import timedelta
 
 import cloudinary
 import os
@@ -19,8 +18,9 @@ load_dotenv()
 
 app = Flask(__name__)
 
-CORS(app)  # Enable CORS for the whole app
+CORS(app)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=7)
 
 cloudinary.config(
     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
@@ -51,13 +51,6 @@ def revoked_token_callback(jwt_header, jwt_payload):
         ),
         401,
     )
-
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return s.query(Users).get(int(user_id))
 
 @app.route('/')
 def hello_world():
