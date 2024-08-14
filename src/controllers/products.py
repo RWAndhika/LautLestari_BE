@@ -2,7 +2,6 @@ from flask import Blueprint, request
 from models.products import Products
 from controllers.users import s
 
-from flask_login import current_user
 from decorators.authorization_checker import role_required
 from sqlalchemy import func
 
@@ -11,12 +10,7 @@ from validations.products_vallidation import add_products_schema
 
 import cloudinary.uploader
 
-from flask_jwt_extended import (
-    create_access_token,
-    jwt_required,
-    get_jwt_identity,
-    get_jwt,
-)
+from flask_jwt_extended import (get_jwt_identity)
 
 products_routes = Blueprint('products_routes', __name__)
 
@@ -52,7 +46,7 @@ def get_products():
         return {'message': 'Unexpected error'}, 500
     
 @products_routes.route('/products/me', methods=['GET'])
-@role_required('buyer')
+@role_required('seller')
 def get_user_products():
     try:
         current_user_id = get_jwt_identity()
@@ -132,7 +126,6 @@ def create_product():
     if not v.validate(request_body):
         return {'message': 'Validation failed', 'errors': v.errors}, 400
     
-    # Upload image to cloudinary
     image_file = request.files.get('image')
     if image_file:
         try:
@@ -201,7 +194,7 @@ def delete_product(id):
 @products_routes.route('/products/<id>', methods=['PUT'])
 @role_required('seller')
 def update_product(id):
-    # Upload image to cloudinary
+    
     current_user_id = get_jwt_identity()
     image_file = request.files.get('image')
     if image_file:

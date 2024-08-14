@@ -8,43 +8,10 @@ from controllers.users import s
 from decorators.authorization_checker import role_required
 from sqlalchemy import func
 
-from flask_jwt_extended import (
-    get_jwt_identity,
-)
+from flask_jwt_extended import get_jwt_identity
 
 confirmations_routes = Blueprint('confirmations_routes', __name__)
-
-# @confirmations_routes.route('/confirmations', methods=['GET'])
-# @role_required('buyer')
-# def get_confirmations():
-#     try:
-#         confirmations_query = s.query(Confirmations).all()
-#         confirmations = []
-
-#         for confirmation in confirmations_query:
-#             confirmations.append(
-#                 {
-#                     'id': confirmation.id,
-#                     'user_id': confirmation.user_id,
-#                     'price': confirmation.price,
-#                     'image': confirmation.image,
-#                     'qty': confirmation.qty,
-#                     'description': confirmation.description,
-#                     'category': confirmation.category,
-#                     'location': confirmation.location,
-#                     'nationality': confirmation.nationality,
-#                     'size': confirmation.size,
-#                     'created_at': confirmation.created_at,
-#                     'updated_at': confirmation.updated_at,
-#                 }
-#             )
-
-#         return {'confirmations': confirmations}, 200
-    
-#     except Exception as e:
-#         print(e)
-#         return {'message': 'Unexpected error'}, 500
-    
+   
 @confirmations_routes.route('/confirmations/me', methods=['GET'])
 @role_required('seller')
 def get_user_confirmations():
@@ -147,20 +114,20 @@ def create_confirmation():
 
     return {'message': 'Create confirmation success'}, 200
 
-# @confirmations_routes.route('/confirmations/<id>', methods=['DELETE'])
-# @role_required('seller')
-# def delete_confirmation(id):
-#     try:
-#         confirmation = s.query(Confirmations).filter(Confirmations.id == id).first()
-#         s.delete(confirmation)
-#         s.commit()
+@confirmations_routes.route('/confirmations/<id>', methods=['DELETE'])
+@role_required('seller')
+def delete_confirmation(id):
+    try:
+        confirmation = s.query(Confirmations).filter(Confirmations.id == id).first()
+        s.delete(confirmation)
+        s.commit()
 
-#     except Exception as e:
-#         s.rollback()
-#         print(e)
-#         return {'message': 'Unexpected error'}, 500
+    except Exception as e:
+        s.rollback()
+        print(e)
+        return {'message': 'Unexpected error'}, 500
 
-#     return {'message': 'Delete confirmation success'}, 200
+    return {'message': 'Delete confirmation success'}, 200
 
 @confirmations_routes.route('/confirmations/<id>', methods=['PUT'])
 @role_required('seller')

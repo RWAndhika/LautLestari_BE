@@ -5,7 +5,6 @@ from models.blocklist import BLOCKLIST
 from datetime import timedelta
 
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import func
 
 from flask_jwt_extended import (
     create_access_token,

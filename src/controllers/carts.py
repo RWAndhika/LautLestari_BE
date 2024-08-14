@@ -8,8 +8,6 @@ from decorators.authorization_checker import role_required
 
 carts_routes = Blueprint('carts_routes', __name__)
 
-
-# menambahkan item ke cart
 @carts_routes.route('/carts', methods=['POST'])
 @role_required('buyer')
 def add_to_cart():
@@ -31,7 +29,6 @@ def add_to_cart():
         product_price = int(qty) * int(product.price)
         product_description = product.description
 
-        # cek apakah sudah ada di keranjang
         cart = s.query(Carts).filter(Carts.user_id == user_id, Carts.product_id == product_id).first()
 
         if cart:
@@ -49,8 +46,6 @@ def add_to_cart():
         s.rollback()
         return{'message': 'Fail to add to cart'}, 500
 
-
-# mendapatkan item dari cart
 @carts_routes.route('/carts', methods=['GET'])
 @role_required('buyer')
 def get_cart():
@@ -77,8 +72,6 @@ def get_cart():
         print(e)
         return {'message': 'Unexpected error'}, 500
 
-
-# menghapus item dari cart
 @carts_routes.route('/carts/<product_id>', methods=['DELETE'])
 @role_required('buyer')
 def delete_cart(product_id):
@@ -87,14 +80,14 @@ def delete_cart(product_id):
         cart_item = s.query(Carts).filter(Carts.user_id == current_user_id, Carts.product_id == product_id).first()
 
         if not cart_item:
-            return jsonify({'message': 'Item not found'}), 404
+            return {'message': 'Item not found'}, 404
 
         s.delete(cart_item)
         s.commit()
 
-        return jsonify({'message': 'Item deleted successfully'}), 200
+        return {'message': 'Item deleted successfully'}, 200
 
     except Exception as e:
         s.rollback() 
         print(e)
-        return jsonify({'message': 'Unexpected error'}), 500
+        return {'message': 'Unexpected error'}, 500
