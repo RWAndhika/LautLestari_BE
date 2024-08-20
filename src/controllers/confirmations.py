@@ -28,6 +28,7 @@ def get_user_confirmations():
                     'buyer': confirmation.buyer,
                     'description': confirmation.description,
                     'product_id': confirmation.product_id,
+                    'price': confirmation.price,
                     'qty': confirmation.qty,
                     'created_at': confirmation.created_at,
                     'is_confirm': confirmation.is_confirm
@@ -50,13 +51,14 @@ def get_confirmation(id):
 
         return {
                 'id': confirmation.id,
-                    'user_id': confirmation.user_id,
-                    'buyer': confirmation.buyer,
-                    'description': confirmation.description,
-                    'product_id': confirmation.product_id,
-                    'qty': confirmation.qty,
-                    'created_at': confirmation.created_at,
-                    'is_confirm': confirmation.is_confirm }, 200
+                'user_id': confirmation.user_id,
+                'buyer': confirmation.buyer,
+                'description': confirmation.description,
+                'product_id': confirmation.product_id,
+                'price': confirmation.price,
+                'qty': confirmation.qty,
+                'created_at': confirmation.created_at,
+                'is_confirm': confirmation.is_confirm }, 200
     
     except Exception as e:
         return {'message': 'Unexpected error'}, 500

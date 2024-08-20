@@ -194,18 +194,22 @@ def delete_product(id):
 @products_routes.route('/products/<id>', methods=['PUT'])
 @role_required('seller')
 def update_product(id):
-    
+
+    allowed_category = ['Import', 'Local']
     current_user_id = get_jwt_identity()
-    image_file = request.files.get('image')
-    if image_file:
+
+    image_url = None
+
+    if 'image' in request.files:
+        image_file = request.files['image']
         try:
             upload_result = cloudinary.uploader.upload(image_file)
             image_url = upload_result['secure_url']
         except Exception as e:
             print(e)
             return {'message': 'Failed to upload image', 'error': str(e)}, 500
-    else:
-        return {'message': 'No image file provided'}, 400
+    elif 'image' in request.form:
+        image_url = request.form['image']
 
     try:
         product = s.query(Products).filter(Products.id == id).first()
@@ -216,18 +220,28 @@ def update_product(id):
         if not product.user_id == current_user_id:
             return {'message': 'Unauthorized'}, 403
 
-        product.image = image_url
-        product.price = request.form['price']
-        product.qty = request.form['qty']
-        product.description = request.form['description']
-        product.category = request.form['category']
-        product.location = request.form['location']
-        product.nationality = request.form['nationality']
-        product.size = request.form['size']
-        if (request.form.get('referral_code')):
-            product.referral_code = request.form.get('referral_code')
-        else:
-            product.referral_code = ""
+        if image_url:
+            product.image = image_url
+        if 'price' in request.form:
+            product.price = request.form['price']
+        if 'qty' in request.form:
+            product.qty = request.form['qty']
+        if 'description' in request.form:
+            product.description = request.form['description']
+        if 'category' in request.form:
+            category = request.form['category']
+            if category not in allowed_category:
+                s.rollback()
+                return {'message': 'Invalid category type (Import, Local)'}
+            product.category = category
+        if 'location' in request.form:
+            product.location = request.form['location']
+        if 'nationality' in request.form:
+            product.nationality = request.form['nationality']
+        if 'size' in request.form:
+            product.size = request.form['size']
+        if 'referral_code' in request.form:
+            product.referral_code = request.form['referral_code']
 
         product.updated_at = func.now()
         s.commit()
