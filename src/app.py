@@ -4,6 +4,7 @@ from controllers.users import users_routes
 from controllers.products import products_routes
 from controllers.carts import carts_routes
 from controllers.confirmations import confirmations_routes
+from controllers.subscribe import subscribe_routes
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from models.blocklist import BLOCKLIST
@@ -32,6 +33,7 @@ app.register_blueprint(users_routes)
 app.register_blueprint(products_routes)
 app.register_blueprint(carts_routes)
 app.register_blueprint(confirmations_routes)
+app.register_blueprint(subscribe_routes)
 
 if __name__ == "__main__":
     app.run(debug=True)
