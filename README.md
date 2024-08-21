@@ -26,14 +26,36 @@ CREATE TABLE users(
 CREATE TABLE products(
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     user_id INTEGER,
-    price INTEGER NOT NULL,
     image VARCHAR(255),
+    price INTEGER NOT NULL,
     qty INTEGER NOT NULL,
     description VARCHAR(255),
     category VARCHAR(255) NOT NULL,
     location VARCHAR(255) NOT NULL,
+    nationality VARCHAR(255) NOT NULL,
+    referral_code VARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME,
     FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE confirmations(
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    user_id INTEGER,
+    buyer VARCHAR(255),
+    product_id INTEGER,
+    price INTEGER,
+    qty INTEGER,
+    description VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME,
+    is_confirm INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE subscribe(
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	email VARCHAR(255) NOT NULL
 );
 ```
