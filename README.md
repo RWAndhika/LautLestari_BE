@@ -1,16 +1,11 @@
 # FSSE-jan24_group-i_gfp_BE
 
-## Database Table for now
+## Database Tables
 
 ```sql
-DROP DATABASE groupfinalproject;
-
 CREATE DATABASE groupfinalproject;
 
 USE groupfinalproject;
-
-DROP TABLE users;
-DROP TABLE products;
 
 CREATE TABLE users(
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
