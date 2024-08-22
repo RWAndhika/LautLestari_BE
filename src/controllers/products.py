@@ -15,7 +15,6 @@ from flask_jwt_extended import (get_jwt_identity)
 products_routes = Blueprint('products_routes', __name__)
 
 @products_routes.route('/products', methods=['GET'])
-@role_required('buyer')
 def get_products():
     try:
         products_query = s.query(Products).all()
