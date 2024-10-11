@@ -1,5 +1,15 @@
 # FSSE-jan24_group-i_gfp_BE
 
+This is a repository of the back-end for LautLestari, RevoU's Full-Stack Software Engineering (FSSE) Bootcamp group I final project.
+*(Note: Due to the use of free services for the API, initial access may take a few moments.)*
+
+For additional information and link of the Front-end:
+[here](https://github.com/RWAndhika/LautLestari)
+
+## API Documentation
+
+[Postman API Documentation](https://documenter.getpostman.com/view/33841449/2sAXxS7Azj)
+
 ## Database Tables
 
 ```sql
