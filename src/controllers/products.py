@@ -87,6 +87,7 @@ def get_product(id):
         return {
                 'id': product.id,
                 'user_id': product.user_id,
+                'seller': product.users.username,
                 'price': product.price,
                 'image': product.image,
                 'qty': product.qty,
