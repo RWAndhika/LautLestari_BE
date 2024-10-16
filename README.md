@@ -6,6 +6,8 @@ This is a repository of the back-end for LautLestari, RevoU's Full-Stack Softwar
 For additional information and link of the Front-end:
 [here](https://github.com/RWAndhika/LautLestari)
 
+The deployed back-end API can be accessed [here](https://lautlestari-be.onrender.com).
+
 ## API Documentation
 
 [Postman API Documentation](https://documenter.getpostman.com/view/33841449/2sAXxS7Azj)
