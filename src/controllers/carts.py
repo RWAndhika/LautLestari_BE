@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models.carts import Carts
 from models.products import Products
+from models.users import Users
 from controllers.users import s
 from flask_jwt_extended import get_jwt_identity
 from decorators.authorization_checker import role_required
@@ -55,6 +56,8 @@ def get_cart():
         cart_items = []
 
         for row in cart_items_query:
+            product = s.query(Products).filter(Products.id == row.product_id).first()
+            seller = s.query(Users).filter(Users.id == product.user_id).first()
             cart_items.append(
                 {
                     'id': row.id,
@@ -62,7 +65,10 @@ def get_cart():
                     'product_id': row.product_id,
                     'qty': row.qty,
                     'price': row.price,
-                    'description': row.description
+                    'description': row.description,
+                    'image': product.image,
+                    'seller': seller.username,
+                    'contact_phone': seller.phonenumber,
                 }
             )
 
